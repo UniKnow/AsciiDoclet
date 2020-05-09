@@ -1,0 +1,6 @@
+= Asciidoclet
+
+include::README.adoc[tags=usage]
+
+@see https://github.com/asciidoctor/asciidoclet[Asciidoclet on Github^]
+@see http://asciidoctor.org/docs[Asciidoctor Documentation^]

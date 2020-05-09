@@ -1,0 +1,6 @@
+dist: trusty
+language: java
+jdk:
+  - openjdk11
+notifications:
+  irc: "irc.freenode.org#asciidoctor"

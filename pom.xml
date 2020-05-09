@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.chrisvest</groupId>
+    <artifactId>asciidoclet</artifactId>
+    <packaging>jar</packaging>
+    <version>2.1.0</version>
+
+    <name>AsciiDoc Javadoc Doclet</name>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <url>http://asciidoctor.org</url>
+    <description>Asciidoclet is a Javadoc Doclet that allows you to write Javadoc using the AsciiDoc format.</description>
+
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>http://github.com/asciidoctor/asciidoclet</url>
+        <connection>scm:git:git@github.com:asciidoctor/asciidoclet.git</connection>
+        <developerConnection>scm:git:git@github.com:asciidoctor/asciidoclet.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-asciidoctor-maven-asciidoclet</id>
+            <name>asciidoctor-maven-asciidoclet</name>
+            <url>https://api.bintray.com/maven/asciidoctor/maven/asciidoclet</url>
+        </repository>
+    </distributionManagement>
+
+    <properties>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <asciidoctorj.version>2.3.0</asciidoctorj.version>
+        <asciidoctorj.diagram.version>2.0.2</asciidoctorj.diagram.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj</artifactId>
+            <version>${asciidoctorj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-diagram</artifactId>
+            <version>${asciidoctorj.diagram.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.0.5</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.parser=asciidoclet</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.tree=asciidoclet</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.model=asciidoclet</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>
+                        --add-exports jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>11</source>
+                    <additionalJOptions>
+                        <additionalJOption>--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
+                        <additionalJOption>--require</additionalJOption>
+                        <additionalJOption>asciidoctor-diagram</additionalJOption>
+                    </additionalJOptions>
+                    <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
+                    <docletArtifact>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>${project.version}</version>
+                    </docletArtifact>
+                    <additionalOptions>
+                      --base-dir ${project.basedir}
+                      --attribute "project_name=${project.name}"
+                      --attribute "project_version=${project.version}"
+                      --attribute "project_desc=${project.description}"
+                    </additionalOptions>
+                    <linksource>true</linksource>
+                    <overview>src/main/java/overview.adoc</overview>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.10.b1</version>
+                <configuration>
+                    <header>NOTICE</header>
+                    <includes>
+                        <include>**/*.java</include>
+                        <include>**/*.xml</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/.*/**</exclude>
+                        <exclude>target/**</exclude>
+                        <exclude>**/AndroidManifest.xml</exclude>
+                    </excludes>
+                    <properties>
+                        <startYear>2013</startYear>
+                        <currentYear>2018</currentYear>
+                        <name>John Ericksen</name>
+                    </properties>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                    <strictCheck>true</strictCheck>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>shaded</shadedClassifierName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
