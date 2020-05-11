@@ -96,9 +96,9 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     <version>3.2.0</version>
     <configuration>
          <additionalJOptions>
-             <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption> // <1>
-             <additionalJOption>-Xdoclint:all,-html,-accessibility,-missing</additionalJOption>
-             <additionalJOption>--base-dir</additionalJOption> // <2>
+             <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption> <!--1-->
+             <additionalJOption>-Xdoclint:all,-html,-accessibility,-missing</additionalJOption> <!--2-->
+             <additionalJOption>--base-dir</additionalJOption>
              <additionalJOption>${project.basedir}</additionalJOption>
          </additionalJOptions>
          <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
