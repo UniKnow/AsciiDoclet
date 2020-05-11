@@ -52,6 +52,7 @@ class AsciidoctorRenderer {
                 .attribute("showtitle", true)
                 .attribute("source-highlighter", "coderay")
                 .attribute("coderay-css", "class")
+                .attribute(Attributes.DATA_URI)
                 .attribute("env-asciidoclet")
                 .attribute("env", "asciidoclet");
     }
@@ -63,7 +64,6 @@ class AsciidoctorRenderer {
     }
 
     private static final Pattern TYPE_PARAM = Pattern.compile("\\s*<(\\w+)>(.*)");
-    private static final String INLINE_DOCTYPE = "inline";
 
     private final Asciidoctor asciidoctor;
     private final Optional<OutputTemplates> templates;
@@ -78,6 +78,7 @@ class AsciidoctorRenderer {
      */
     private AsciidoctorRenderer(DocletOptions docletOptions, Reporter errorReporter, Optional<OutputTemplates> templates, Asciidoctor asciidoctor) {
         this.asciidoctor = asciidoctor;
+        asciidoctor.requireLibrary("asciidoctor-diagram");
         this.templates = templates;
         this.options = buildOptions(docletOptions, errorReporter);
     }
@@ -177,6 +178,7 @@ class AsciidoctorRenderer {
         }
 
         options.setDocType(inline ? DocTypeEnum.inline.name() : DocTypeEnum.article.name());
+
         return asciidoctor.convert(cleanJavadocInput(input), options);
     }
 

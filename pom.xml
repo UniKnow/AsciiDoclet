@@ -147,17 +147,15 @@
                 <configuration>
                     <source>11</source>
                     <additionalJOptions>
-                        <additionalJOption>--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
-                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
-                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>
-                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
+<!--                        <additionalJOption>&#45;&#45;add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>-->
+<!--                        <additionalJOption>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>-->
+<!--                        <additionalJOption>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>-->
+<!--                        <additionalJOption>&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>-->
                         <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
-                        <additionalJOption>--require</additionalJOption>
-                        <additionalJOption>asciidoctor-diagram</additionalJOption>
                     </additionalJOptions>
                     <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
                     <docletArtifact>
