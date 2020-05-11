@@ -103,7 +103,7 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
          </additionalJOptions>
          <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
          <docletArtifact>
-             <groupId>com.github.chrisvest</groupId>
+             <groupId>org.uniknow</groupId>
              <artifactId>asciidoclet</artifactId>
              <version>2.1.0</version>
          </docletArtifact>
