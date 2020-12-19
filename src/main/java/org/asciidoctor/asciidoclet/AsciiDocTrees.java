@@ -53,223 +53,183 @@ import javax.tools.StandardJavaFileManager;
 
 import static javax.tools.StandardLocation.SOURCE_PATH;
 
-class AsciiDocTrees extends DocTrees
-{
+class AsciiDocTrees extends DocTrees {
     private final AsciidoctorRenderer renderer;
     private final StandardJavaFileManager fileManager;
     private final DocTrees docTrees;
     private final Field elementsField;
 
-    AsciiDocTrees( AsciidoctorRenderer renderer, StandardJavaFileManager fileManager, DocTrees docTrees )
-    {
+    AsciiDocTrees(AsciidoctorRenderer renderer, StandardJavaFileManager fileManager, DocTrees docTrees) {
         this.renderer = renderer;
         this.fileManager = fileManager;
         this.docTrees = docTrees;
-        try
-        {
-            this.elementsField = docTrees.getClass().getDeclaredField( "elements" );
-            this.elementsField.setAccessible( true );
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
+        try {
+            this.elementsField = docTrees.getClass().getDeclaredField("elements");
+            this.elementsField.setAccessible(true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public BreakIterator getBreakIterator()
-    {
+    public BreakIterator getBreakIterator() {
         return docTrees.getBreakIterator();
     }
 
-    public String getDocComment( TreePath path )
-    {
-        return renderer.renderDoc( docTrees.getDocComment( path ) );
+    public String getDocComment(TreePath path) {
+        return renderer.renderDoc(docTrees.getDocComment(path));
     }
 
-    public DocCommentTree getDocCommentTree( TreePath path )
-    {
+    public DocCommentTree getDocCommentTree(TreePath path) {
         // First we convert the asciidoctor to HTML inside the AST.
         JCTree.JCCompilationUnit cu = (JCTree.JCCompilationUnit) path.getCompilationUnit();
-        LazyDocCommentTableProcessor.processComments( cu.docComments, this::convertToAsciidoctor );
+        LazyDocCommentTableProcessor.processComments(cu.docComments, this::convertToAsciidoctor);
 
         // Then we allow the normal javadoc parsing to continue on the asciidoctor result.
-        return docTrees.getDocCommentTree( path );
+        return docTrees.getDocCommentTree(path);
     }
 
-    private Tokens.Comment convertToAsciidoctor( Tokens.Comment comment )
-    {
-        String javadoc = comment.getText();
-        String asciidoc = renderer.renderDoc( javadoc );
-        AsciidocComment result = new AsciidocComment( asciidoc, comment );System.err.println( "" );
-        return result;
+    private Tokens.Comment convertToAsciidoctor(Tokens.Comment comment) {
+        try {
+            String javadoc = comment.getText();
+            String asciidoc = renderer.renderDoc(javadoc);
+            return new AsciidocComment(asciidoc, comment);
+        } catch(Exception error) {
+            System.err.println("Exception occurred while processing " + comment.getText());
+            throw error;
+        }
     }
 
-    public DocCommentTree getDocCommentTree( Element e )
-    {
-        TreePath path = getPath( e );
-        if ( path == null )
-        {
+    public DocCommentTree getDocCommentTree(Element e) {
+        TreePath path = getPath(e);
+        if (path == null) {
             return null;
         }
-        return getDocCommentTree( path );
+        return getDocCommentTree(path);
     }
 
-    public DocCommentTree getDocCommentTree( FileObject fileObject )
-    {
+    public DocCommentTree getDocCommentTree(FileObject fileObject) {
         // Empty names are used for built-in headers and footers, which need no asciidoctor processing anyway.
-        if ( !fileObject.getName().isEmpty() && !(fileObject instanceof AsciidocFileView))
-        {
-            return docTrees.getDocCommentTree( new AsciidocFileView( renderer, fileObject ) );
+        if (!fileObject.getName().isEmpty() && !(fileObject instanceof AsciidocFileView)) {
+            return docTrees.getDocCommentTree(new AsciidocFileView(renderer, fileObject));
         }
-        return docTrees.getDocCommentTree( fileObject );
+        return docTrees.getDocCommentTree(fileObject);
     }
 
-    public DocCommentTree getDocCommentTree( Element e, String relativePath ) throws IOException
-    {
-        PackageElement pkg = getElements().getPackageOf( e );
+    public DocCommentTree getDocCommentTree(Element e, String relativePath) throws IOException {
+        PackageElement pkg = getElements().getPackageOf(e);
         JavaFileManager fileManager = getFileManager();
-        FileObject input = fileManager.getFileForInput( SOURCE_PATH, pkg.getQualifiedName().toString(), relativePath );
-        if ( input == null )
-        {
-            throw new FileNotFoundException( relativePath );
+        FileObject input = fileManager.getFileForInput(SOURCE_PATH, pkg.getQualifiedName().toString(), relativePath);
+        if (input == null) {
+            throw new FileNotFoundException(relativePath);
         }
-        return getDocCommentTree( input );
+        return getDocCommentTree(input);
     }
 
-    private JavacElements getElements()
-    {
-        try
-        {
-            return (JavacElements) elementsField.get( docTrees );
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
+    private JavacElements getElements() {
+        try {
+            return (JavacElements) elementsField.get(docTrees);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private JavaFileManager getFileManager()
-    {
+    private JavaFileManager getFileManager() {
         return fileManager;
     }
 
-    public DocTreePath getDocTreePath( FileObject fileObject, PackageElement packageElement )
-    {
-        return docTrees.getDocTreePath( fileObject, packageElement );
+    public DocTreePath getDocTreePath(FileObject fileObject, PackageElement packageElement) {
+        return docTrees.getDocTreePath(fileObject, packageElement);
     }
 
-    public Element getElement( DocTreePath path )
-    {
-        return docTrees.getElement( path );
+    public Element getElement(DocTreePath path) {
+        return docTrees.getElement(path);
     }
 
-    public List<DocTree> getFirstSentence( List<? extends DocTree> list )
-    {
-        return docTrees.getFirstSentence( list );
+    public List<DocTree> getFirstSentence(List<? extends DocTree> list) {
+        return docTrees.getFirstSentence(list);
     }
 
-    public DocSourcePositions getSourcePositions()
-    {
+    public DocSourcePositions getSourcePositions() {
         return docTrees.getSourcePositions();
     }
 
-    public void printMessage( Diagnostic.Kind kind, CharSequence msg, DocTree t, DocCommentTree c, CompilationUnitTree root )
-    {
-        docTrees.printMessage( kind, msg, t, c, root );
+    public void printMessage(Diagnostic.Kind kind, CharSequence msg, DocTree t, DocCommentTree c, CompilationUnitTree root) {
+        docTrees.printMessage(kind, msg, t, c, root);
     }
 
-    public void setBreakIterator( BreakIterator breakiterator )
-    {
-        docTrees.setBreakIterator( breakiterator );
+    public void setBreakIterator(BreakIterator breakiterator) {
+        docTrees.setBreakIterator(breakiterator);
     }
 
-    public DocTreeFactory getDocTreeFactory()
-    {
+    public DocTreeFactory getDocTreeFactory() {
         return docTrees.getDocTreeFactory();
     }
 
-    public Tree getTree( Element element )
-    {
-        return docTrees.getTree( element );
+    public Tree getTree(Element element) {
+        return docTrees.getTree(element);
     }
 
-    public ClassTree getTree( TypeElement element )
-    {
-        return docTrees.getTree( element );
+    public ClassTree getTree(TypeElement element) {
+        return docTrees.getTree(element);
     }
 
-    public MethodTree getTree( ExecutableElement method )
-    {
-        return docTrees.getTree( method );
+    public MethodTree getTree(ExecutableElement method) {
+        return docTrees.getTree(method);
     }
 
-    public Tree getTree( Element e, AnnotationMirror a )
-    {
-        return docTrees.getTree( e, a );
+    public Tree getTree(Element e, AnnotationMirror a) {
+        return docTrees.getTree(e, a);
     }
 
-    public Tree getTree( Element e, AnnotationMirror a, AnnotationValue v )
-    {
-        return docTrees.getTree( e, a, v );
+    public Tree getTree(Element e, AnnotationMirror a, AnnotationValue v) {
+        return docTrees.getTree(e, a, v);
     }
 
-    public TreePath getPath( CompilationUnitTree unit, Tree node )
-    {
-        return docTrees.getPath( unit, node );
+    public TreePath getPath(CompilationUnitTree unit, Tree node) {
+        return docTrees.getPath(unit, node);
     }
 
-    public TreePath getPath( Element e )
-    {
-        return docTrees.getPath( e );
+    public TreePath getPath(Element e) {
+        return docTrees.getPath(e);
     }
 
-    public TreePath getPath( Element e, AnnotationMirror a )
-    {
-        return docTrees.getPath( e, a );
+    public TreePath getPath(Element e, AnnotationMirror a) {
+        return docTrees.getPath(e, a);
     }
 
-    public TreePath getPath( Element e, AnnotationMirror a, AnnotationValue v )
-    {
-        return docTrees.getPath( e, a, v );
+    public TreePath getPath(Element e, AnnotationMirror a, AnnotationValue v) {
+        return docTrees.getPath(e, a, v);
     }
 
-    public Element getElement( TreePath path )
-    {
-        return docTrees.getElement( path );
+    public Element getElement(TreePath path) {
+        return docTrees.getElement(path);
     }
 
-    public TypeMirror getTypeMirror( TreePath path )
-    {
-        return docTrees.getTypeMirror( path );
+    public TypeMirror getTypeMirror(TreePath path) {
+        return docTrees.getTypeMirror(path);
     }
 
-    public Scope getScope( TreePath path )
-    {
-        return docTrees.getScope( path );
+    public Scope getScope(TreePath path) {
+        return docTrees.getScope(path);
     }
 
-    public boolean isAccessible( Scope scope, TypeElement type )
-    {
-        return docTrees.isAccessible( scope, type );
+    public boolean isAccessible(Scope scope, TypeElement type) {
+        return docTrees.isAccessible(scope, type);
     }
 
-    public boolean isAccessible( Scope scope, Element member, DeclaredType type )
-    {
-        return docTrees.isAccessible( scope, member, type );
+    public boolean isAccessible(Scope scope, Element member, DeclaredType type) {
+        return docTrees.isAccessible(scope, member, type);
     }
 
-    public TypeMirror getOriginalType( ErrorType errorType )
-    {
-        return docTrees.getOriginalType( errorType );
+    public TypeMirror getOriginalType(ErrorType errorType) {
+        return docTrees.getOriginalType(errorType);
     }
 
-    public void printMessage( Diagnostic.Kind kind, CharSequence msg, Tree t, CompilationUnitTree root )
-    {
-        docTrees.printMessage( kind, msg, t, root );
+    public void printMessage(Diagnostic.Kind kind, CharSequence msg, Tree t, CompilationUnitTree root) {
+        docTrees.printMessage(kind, msg, t, root);
     }
 
-    public TypeMirror getLub( CatchTree tree )
-    {
-        return docTrees.getLub( tree );
+    public TypeMirror getLub(CatchTree tree) {
+        return docTrees.getLub(tree);
     }
 }
