@@ -31,6 +31,7 @@ import javax.tools.JavaFileManager;
  */
 public class Stylesheets
 {
+    static final String JAVA15_STYLESHEET = "stylesheet15.css";
     static final String JAVA11_STYLESHEET = "stylesheet11.css";
     static final String JAVA9_STYLESHEET = "stylesheet9.css";
     static final String JAVA8_STYLESHEET = "stylesheet8.css";
@@ -110,11 +111,15 @@ public class Stylesheets
         {
             return JAVA9_STYLESHEET;
         }
-        if ( javaVersion.matches( "^(11)(\\.)?.*" ) )
+        if ( javaVersion.matches( "^(11|12|13|14)(\\.)?.*" ) )
         {
             return JAVA11_STYLESHEET;
         }
-        errorReporter.print( Diagnostic.Kind.WARNING, "Unrecognized Java version " + javaVersion + ", using Java 11 stylesheet" );
-        return JAVA11_STYLESHEET;
+        if ( javaVersion.matches( "^(15)(\\.)?.*" ) )
+        {
+            return JAVA15_STYLESHEET;
+        }
+        errorReporter.print( Diagnostic.Kind.WARNING, "Unrecognized Java version " + javaVersion + ", using Java 15 stylesheet" );
+        return JAVA15_STYLESHEET;
     }
 }

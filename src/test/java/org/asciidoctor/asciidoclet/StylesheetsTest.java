@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import javax.tools.Diagnostic;
 
+import static org.asciidoctor.asciidoclet.Stylesheets.JAVA15_STYLESHEET;
 import static org.asciidoctor.asciidoclet.Stylesheets.JAVA11_STYLESHEET;
 import static org.asciidoctor.asciidoclet.Stylesheets.JAVA6_STYLESHEET;
 import static org.asciidoctor.asciidoclet.Stylesheets.JAVA8_STYLESHEET;
@@ -37,6 +38,34 @@ public class StylesheetsTest
     {
         reporter = new StubReporter();
         stylesheets = new Stylesheets( reporter );
+    }
+
+    @Test
+    public void java15ShouldSelectStylesheet15()
+    {
+        assertEquals( JAVA15_STYLESHEET, stylesheets.selectStylesheet( "15" ) );
+        reporter.assertNoMoreInteractions();
+    }
+
+    @Test
+    public void java14ShouldSelectStylesheet11()
+    {
+        assertEquals( JAVA11_STYLESHEET, stylesheets.selectStylesheet( "14" ) );
+        reporter.assertNoMoreInteractions();
+    }
+
+    @Test
+    public void java13ShouldSelectStylesheet11()
+    {
+        assertEquals( JAVA11_STYLESHEET, stylesheets.selectStylesheet( "13" ) );
+        reporter.assertNoMoreInteractions();
+    }
+
+    @Test
+    public void java12ShouldSelectStylesheet11()
+    {
+        assertEquals( JAVA11_STYLESHEET, stylesheets.selectStylesheet( "12" ) );
+        reporter.assertNoMoreInteractions();
     }
 
     @Test
@@ -98,7 +127,7 @@ public class StylesheetsTest
     @Test
     public void unknownJavaShouldSelectLatestStylesheetAndWarn()
     {
-        assertEquals( JAVA11_STYLESHEET, stylesheets.selectStylesheet( "42.3.0_12" ) );
-        assertEquals( reporter.pullCall().get( 0 ), Diagnostic.Kind.WARNING );
+        assertEquals( JAVA15_STYLESHEET, stylesheets.selectStylesheet( "42.3.0_12" ) );
+        assertEquals( Diagnostic.Kind.WARNING,reporter.pullCall().get( 0 ) );
     }
 }
