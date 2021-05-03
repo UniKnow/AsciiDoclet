@@ -105,7 +105,7 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
          <docletArtifact>
              <groupId>org.uniknow</groupId>
              <artifactId>asciidoclet</artifactId>
-             <version>2.2.0</version>
+             <version>2.2.1</version>
          </docletArtifact>
          <detectJavaApiLink>true</detectJavaApiLink>
     </configuration>
