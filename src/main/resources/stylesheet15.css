@@ -1,10 +1,11 @@
 /* Asciidoclet Java 15 javadoc stylesheet
  *
- * Javadoc stylesheet based on http://docs.oracle.com/javase/9/docs/api/stylesheet.css
+ * Javadoc stylesheet based on http://docs.oracle.com/javase/11/docs/api/stylesheet.css
  * with additional styles from Asciidoctor.
  */
 
 @import url('coderay-asciidoctor.css');
+@import url('asciidoctor.css');
 
 /*
  * Javadoc style sheet
